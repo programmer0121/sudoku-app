@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sudoku app</title>
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+        td input { width: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+<div id="app">
+    {{ message }}
+    <div>
+        <table>
+            <tr v-for="(row, y) in board" :key="y">
+                <td v-for="(cell, x) in row">
+                    <input v-model="cell"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+let app = new Vue({
+    el: '#app',
+    data: {
+        message: 'Sudoku application',
+        board: [
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0],
+        ]
+    },
+    created() {
+        const userAction = async () => {
+            const response = await fetch('api/');
+            return await response.json();
+        };
+        userAction().then(response => {
+            this.message = response.message;
+        });
+    }
+});
+</script>
+</body>
+</html>

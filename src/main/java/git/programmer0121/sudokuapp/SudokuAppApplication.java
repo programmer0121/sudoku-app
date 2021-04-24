@@ -1,4 +1,4 @@
-package com.github.programmer0121.sudokuapp;
+package git.programmer0121.sudokuapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
