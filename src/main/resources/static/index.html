@@ -27,7 +27,8 @@
         </table>
         <br>
         <textarea v-model="text"></textarea>
-        <button @click="load">Load</button>
+        <button @click="load(text)">Load</button>
+        <button @click="solve">Solve</button>
 </div>
 <script>
 let app = new Vue({
@@ -55,24 +56,46 @@ let app = new Vue({
                 }
             }
         },
-        load() {
-            let text = this.text.split("\n");
+        load(srcText) {
+            let text = srcText.split("\n");
             for (let row = 0; row < 9; row++) {
-                this.board.push([]);
                 for (let col = 0; col < 9; col++) {
                     this.board[row][col].value = text[row][col];
                 }
             }
+        },
+        getText() {
+            let board = "";
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    board += this.board[row][col].value;
+                }
+                board += "\n";
+            }
+            return board;
+        },
+        solve() {
+            const action = async () => {
+                const board = this.getText();
+                const response = await fetch('api/solve', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST',
+                    body: JSON.stringify({ board: board })
+                });
+                return await response.json();
+            };
+            action().then(response => { this.load(response.board) });
         }
     },
     created() {
-        const userAction = async () => {
+        const action = async () => {
             const response = await fetch('api/');
             return await response.json();
         };
-        userAction().then(response => {
-            this.message = response.message;
-        });
+        action().then(response => { this.message = response.message; });
         this.initBoard();
     }
 });
