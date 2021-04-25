@@ -4,19 +4,24 @@
     <title>Sudoku app</title>
     <script src="https://unpkg.com/vue"></script>
     <style>
-        td input { width: 20px; text-align: center; }
+        table { border-collapse: collapse; font-family: Calibri, sans-serif; }
+        colgroup, tbody { border: solid medium; }
+        td { border: solid thin; padding: 0; }
+        td input { border: 0; height: 2em; width: 2em; text-align: center; padding: 0; font-size: 25px; }
     </style>
 </head>
 <body>
 <div id="app">
-    {{ message }}
-    <div>
         <table>
-            <tr v-for="(row, y) in board" :key="y">
-                <td v-for="(cell, x) in row">
-                    <input v-model="cell"/>
-                </td>
-            </tr>
+            <caption>Sudoku of the day</caption>
+            <colgroup v-for="colgroup in 3"><col><col><col></colgroup>
+            <tbody v-for="group in 3">
+                <tr v-for="row in 3">
+                    <td v-for="(cell, x) in board[(group-1)*3 + (row-1)]">
+                        <input v-model="cell.value"/>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
@@ -25,17 +30,18 @@ let app = new Vue({
     el: '#app',
     data: {
         message: 'Sudoku application',
-        board: [
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0],
-        ]
+        board: []
+    },
+    methods: {
+        initBoard() {
+            for (let row = 0; row < 9; row++) {
+                this.board.push([]);
+                for (let col = 0; col < 9; col++) {
+                    let cell = { value: row+col };
+                    this.board[row].push(cell);
+                }
+            }
+        }
     },
     created() {
         const userAction = async () => {
@@ -45,6 +51,7 @@ let app = new Vue({
         userAction().then(response => {
             this.message = response.message;
         });
+        this.initBoard();
     }
 });
 </script>
